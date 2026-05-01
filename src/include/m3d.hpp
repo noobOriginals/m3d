@@ -226,6 +226,140 @@ float32 lenSq(const vec4& v);
 float32 len(const vec4& v);
 vec4 normalize(const vec4& v);
 
+// --- mat3 ---
+
+struct mat3 {
+    float32 e[9]; // column-major: e[col * 3 + row]
+
+    mat3();
+    mat3(float32 diagonal);
+    explicit mat3(const mat4& m);
+
+    mat3 add(const mat3& o) const;
+    mat3 add(float32 s) const;
+    mat3 sub(const mat3& o) const;
+    mat3 sub(float32 s) const;
+    mat3 mul(const mat3& o) const;
+    mat3 mul(float32 s) const;
+    vec3 mul(const vec3& v) const;
+    mat3 div(const mat3& o) const;
+    mat3 div(float32 s) const;
+
+    mat3& operator+=(const mat3& o);
+    mat3& operator+=(float32 s);
+    mat3& operator-=(const mat3& o);
+    mat3& operator-=(float32 s);
+    mat3& operator*=(const mat3& o);
+    mat3& operator*=(float32 s);
+    mat3& operator/=(const mat3& o);
+    mat3& operator/=(float32 s);
+
+    float32 determinant() const;
+    mat3 transpose() const;
+    mat3 inverse() const;
+    float32 trace() const;
+};
+
+mat3 add(const mat3& a, const mat3& b);
+mat3 add(const mat3& m, float32 s);
+mat3 add(float32 s, const mat3& m);
+mat3 sub(const mat3& a, const mat3& b);
+mat3 sub(const mat3& m, float32 s);
+mat3 sub(float32 s, const mat3& m);
+mat3 mul(const mat3& a, const mat3& b);
+mat3 mul(const mat3& m, float32 s);
+mat3 mul(float32 s, const mat3& m);
+vec3 mul(const mat3& m, const vec3& v);
+mat3 div(const mat3& a, const mat3& b);
+mat3 div(const mat3& m, float32 s);
+mat3 div(float32 s, const mat3& m);
+
+mat3 operator+(const mat3& a, const mat3& b);
+mat3 operator+(const mat3& m, float32 s);
+mat3 operator+(float32 s, const mat3& m);
+mat3 operator-(const mat3& a, const mat3& b);
+mat3 operator-(const mat3& m, float32 s);
+mat3 operator-(float32 s, const mat3& m);
+mat3 operator*(const mat3& a, const mat3& b);
+mat3 operator*(const mat3& m, float32 s);
+mat3 operator*(float32 s, const mat3& m);
+vec3 operator*(const mat3& m, const vec3& v);
+mat3 operator/(const mat3& a, const mat3& b);
+mat3 operator/(const mat3& m, float32 s);
+mat3 operator/(float32 s, const mat3& m);
+
+float32 determinant(const mat3& m);
+mat3 transpose(const mat3& m);
+mat3 inverse(const mat3& m);
+float32 trace(const mat3& m);
+
+// --- mat4 ---
+
+struct mat4 {
+    float32 e[16]; // column-major: e[col * 4 + row]
+
+    mat4();
+    mat4(float32 diagonal);
+    mat4(const mat3& m, float32 d = 0.0f);
+
+    mat4 add(const mat4& o) const;
+    mat4 add(float32 s) const;
+    mat4 sub(const mat4& o) const;
+    mat4 sub(float32 s) const;
+    mat4 mul(const mat4& o) const;
+    mat4 mul(float32 s) const;
+    vec4 mul(const vec4& v) const;
+    mat4 div(const mat4& o) const;
+    mat4 div(float32 s) const;
+
+    mat4& operator+=(const mat4& o);
+    mat4& operator+=(float32 s);
+    mat4& operator-=(const mat4& o);
+    mat4& operator-=(float32 s);
+    mat4& operator*=(const mat4& o);
+    mat4& operator*=(float32 s);
+    mat4& operator/=(const mat4& o);
+    mat4& operator/=(float32 s);
+
+    float32 determinant() const;
+    mat4 transpose() const;
+    mat4 inverse() const;
+    float32 trace() const;
+};
+
+mat4 add(const mat4& a, const mat4& b);
+mat4 add(const mat4& m, float32 s);
+mat4 add(float32 s, const mat4& m);
+mat4 sub(const mat4& a, const mat4& b);
+mat4 sub(const mat4& m, float32 s);
+mat4 sub(float32 s, const mat4& m);
+mat4 mul(const mat4& a, const mat4& b);
+mat4 mul(const mat4& m, float32 s);
+mat4 mul(float32 s, const mat4& m);
+vec4 mul(const mat4& m, const vec4& v);
+mat4 div(const mat4& a, const mat4& b);
+mat4 div(const mat4& m, float32 s);
+mat4 div(float32 s, const mat4& m);
+
+mat4 operator+(const mat4& a, const mat4& b);
+mat4 operator+(const mat4& m, float32 s);
+mat4 operator+(float32 s, const mat4& m);
+mat4 operator-(const mat4& a, const mat4& b);
+mat4 operator-(const mat4& m, float32 s);
+mat4 operator-(float32 s, const mat4& m);
+mat4 operator*(const mat4& a, const mat4& b);
+mat4 operator*(const mat4& m, float32 s);
+mat4 operator*(float32 s, const mat4& m);
+vec4 operator*(const mat4& m, const vec4& v);
+mat4 operator/(const mat4& a, const mat4& b);
+mat4 operator/(const mat4& m, float32 s);
+mat4 operator/(float32 s, const mat4& m);
+
+float32 determinant(const mat4& m);
+mat4 transpose(const mat4& m);
+mat4 inverse(const mat4& m);
+float32 trace(const mat4& m);
+
 } // namespace m3d
 
 #endif // M3D_HPP

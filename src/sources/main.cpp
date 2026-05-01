@@ -166,5 +166,119 @@ int main() {
         test("vec3 explicit from vec4", eq(v3b.x, 1.0f) && eq(v3b.z, 3.0f));
     }
 
+    // --- mat3 ---
+    {
+        mat3 I(1.0f);
+        test("mat3 identity diagonal",  eq(I.e[0], 1.0f) && eq(I.e[4], 1.0f) && eq(I.e[8], 1.0f));
+        test("mat3 identity off-diag",  eq(I.e[1], 0.0f) && eq(I.e[3], 0.0f));
+        test("mat3 default zero",       eq(mat3().e[0], 0.0f) && eq(mat3().e[4], 0.0f));
+        test("mat3 trace identity",     eq(I.trace(), 3.0f));
+        test("mat3 det identity",       eq(I.determinant(), 1.0f));
+
+        mat3 T = I.transpose();
+        test("mat3 transpose identity", eq(T.e[0], 1.0f) && eq(T.e[4], 1.0f) && eq(T.e[8], 1.0f));
+
+        // known 3x3 matrix (column-major):
+        // | 1  2  3 |
+        // | 0  1  4 |
+        // | 5  6  0 |
+        // column-major storage: col0=(1,0,5), col1=(2,1,6), col2=(3,4,0)
+        mat3 M;
+        M.e[0]=1; M.e[1]=0; M.e[2]=5;
+        M.e[3]=2; M.e[4]=1; M.e[5]=6;
+        M.e[6]=3; M.e[7]=4; M.e[8]=0;
+
+        // det = 1*(1*0 - 4*6) - 2*(0*0 - 4*5) + 3*(0*6 - 1*5) = 1*(-24) - 2*(-20) + 3*(-5) = -24+40-15 = 1
+        test("mat3 determinant",        eq(M.determinant(), 1.0f));
+        test("mat3 trace",              eq(M.trace(), 2.0f));
+
+        mat3 Minv = M.inverse();
+        mat3 MMinv = M * Minv;
+        test("mat3 M*inv(M) = I",       eq(MMinv.e[0], 1.0f) && eq(MMinv.e[4], 1.0f) && eq(MMinv.e[8], 1.0f)
+                                      && eq(MMinv.e[1], 0.0f) && eq(MMinv.e[3], 0.0f));
+
+        mat3 MT = M.transpose();
+        // transpose swaps e[1]<->e[3], e[2]<->e[6], e[5]<->e[7]
+        test("mat3 transpose",          eq(MT.e[1], M.e[3]) && eq(MT.e[3], M.e[1]) && eq(MT.e[2], M.e[6]));
+
+        // mul(mat3, vec3)
+        vec3 v(1.0f, 0.0f, 0.0f);
+        vec3 Mv = M * v;
+        // first column of M: (1, 0, 5)
+        test("mat3 * vec3",             eq(Mv.x, 1.0f) && eq(Mv.y, 0.0f) && eq(Mv.z, 5.0f));
+
+        // mul(mat3, mat3): M * I = M
+        mat3 MI = M * I;
+        test("mat3 * identity = M",     eq(MI.e[0], M.e[0]) && eq(MI.e[4], M.e[4]) && eq(MI.e[8], M.e[8]));
+
+        // element-wise ops
+        mat3 M2 = M + M;
+        test("mat3 add",                eq(M2.e[0], 2.0f) && eq(M2.e[4], 2.0f));
+        mat3 M3 = M * 3.0f;
+        test("mat3 mul scalar",         eq(M3.e[0], 3.0f) && eq(M3.e[4], 3.0f));
+
+        // cast from mat4
+        mat4 big(2.0f);
+        mat3 fromMat4 = mat3(big);
+        test("mat3 from mat4",          eq(fromMat4.e[0], 2.0f) && eq(fromMat4.e[4], 2.0f) && eq(fromMat4.e[8], 2.0f));
+    }
+
+    // --- mat4 ---
+    {
+        mat4 I(1.0f);
+        test("mat4 identity diagonal",  eq(I.e[0], 1.0f) && eq(I.e[5], 1.0f) && eq(I.e[10], 1.0f) && eq(I.e[15], 1.0f));
+        test("mat4 identity off-diag",  eq(I.e[1], 0.0f) && eq(I.e[4], 0.0f));
+        test("mat4 trace identity",     eq(I.trace(), 4.0f));
+        test("mat4 det identity",       eq(I.determinant(), 1.0f));
+
+        mat4 T = I.transpose();
+        test("mat4 transpose identity", eq(T.e[0], 1.0f) && eq(T.e[15], 1.0f) && eq(T.e[1], 0.0f));
+
+        // diagonal matrix with known det
+        mat4 D(3.0f);
+        test("mat4 det diagonal 3",     eq(D.determinant(), 81.0f));
+
+        mat4 Dinv = D.inverse();
+        mat4 DDinv = D * Dinv;
+        test("mat4 D*inv(D) = I",       eq(DDinv.e[0], 1.0f) && eq(DDinv.e[5], 1.0f)
+                                      && eq(DDinv.e[10], 1.0f) && eq(DDinv.e[15], 1.0f)
+                                      && eq(DDinv.e[1], 0.0f));
+
+        // singular matrix: zero det, inverse should return zero matrix
+        mat4 S;
+        test("mat4 singular inverse",   eq(S.inverse().e[0], 0.0f));
+
+        // mul(mat4, vec4): identity * v = v
+        vec4 v(1.0f, 2.0f, 3.0f, 4.0f);
+        vec4 Iv = I * v;
+        test("mat4 * vec4 identity",    eq(Iv.x, 1.0f) && eq(Iv.y, 2.0f) && eq(Iv.z, 3.0f) && eq(Iv.w, 4.0f));
+
+        // mul(mat4, mat4): I * I = I
+        mat4 II = I * I;
+        test("mat4 I*I = I",            eq(II.e[0], 1.0f) && eq(II.e[5], 1.0f) && eq(II.e[1], 0.0f));
+
+        // element-wise add
+        mat4 I2 = I + I;
+        test("mat4 add",                eq(I2.e[0], 2.0f) && eq(I2.e[5], 2.0f) && eq(I2.e[1], 0.0f));
+
+        // from mat3
+        mat3 m3(2.0f);
+        mat4 fromMat3(m3, 1.0f);
+        test("mat4 from mat3",          eq(fromMat3.e[0], 2.0f) && eq(fromMat3.e[5], 2.0f)
+                                      && eq(fromMat3.e[10], 2.0f) && eq(fromMat3.e[15], 1.0f)
+                                      && eq(fromMat3.e[3], 0.0f));
+
+        // transpose of a non-symmetric matrix
+        mat4 A(1.0f);
+        A.e[4] = 5.0f; // set off-diagonal
+        mat4 AT = A.transpose();
+        test("mat4 transpose off-diag", eq(AT.e[1], 5.0f) && eq(AT.e[4], 0.0f));
+
+        // *= operator
+        mat4 B(2.0f);
+        B *= mat4(0.5f);
+        test("mat4 *=",                 eq(B.e[0], 1.0f) && eq(B.e[5], 1.0f));
+    }
+
     return 0;
 }

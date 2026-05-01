@@ -34,18 +34,22 @@ All public API lives in a single header: `src/include/m3d.hpp`. Implementations 
 ## Development phases
 
 - Phase 1: `vec2`, `vec3`, `vec4` — COMPLETE
-- Phase 2: `mat3`, `mat4` (core ops, `determinant`, `inverse`, `transpose`, `trace`) — next
-- Phase 3: transform helpers (`translate`, `rotate`, `scale`, `perspective`, `ortho`, `lookAt`)
+- Phase 2: `mat3`, `mat4` (core ops, `determinant`, `inverse`, `transpose`, `trace`) — COMPLETE
+- Phase 3: transform helpers (`translate`, `rotate`, `scale`, `perspective`, `ortho`, `lookAt`) — next
 
 ## Current status
 
-Phase 1 is complete. All three vector types are implemented and tested in `src/sources/main.cpp`.
+Phases 1 and 2 are complete. All types are implemented and tested in `src/sources/main.cpp`.
 
-Key implementation decisions made in Phase 1:
-- Truncating cast constructors (`vec2(const vec3&)`, `vec2(const vec4&)`, `vec3(const vec4&)`) are marked `explicit` to prevent silent data loss via implicit conversion.
-- Extending cast constructors (`vec3(const vec2&, float32 z = 0.0f)`, `vec4(const vec3&, float32 w = 0.0f)`, `vec4(const vec2&, float32 z, float32 w)`) are non-explicit.
-- `normalize()` returns a zero vector when length is below `EPSILON`.
+Key implementation decisions:
+- Truncating cast constructors (`vec2(const vec3&)`, `vec2(const vec4&)`, `vec3(const vec4&)`, `mat3(const mat4&)`) are marked `explicit`.
+- Extending cast constructors (`vec3(const vec2&, z)`, `vec4(const vec3&, w)`, `mat4(const mat3&, d)`) are non-explicit.
+- `normalize()` and `inverse()` return zero vector/matrix when below `EPSILON`.
 - `std::sqrt` and `std::abs` are included via `<cmath>` in `m3d.cpp` only.
+- Matrix storage is column-major: `e[col * N + row]` where N is 3 or 4.
+- `mat3(float32 d)` / `mat4(float32 d)` construct a diagonal matrix (identity when d=1).
+- `mat4::inverse()` uses the Laplace 2x2 sub-determinant method (a0..a5, b0..b5 pairs).
+- Matrix `mul()` / `operator*` is true matrix multiplication; element-wise ops use `add/sub/div` only.
 
 ## Code conventions  
 

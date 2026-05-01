@@ -218,4 +218,447 @@ float32 lenSq(const vec4& v)  { return v.lenSq(); }
 float32 len(const vec4& v)    { return v.len(); }
 vec4 normalize(const vec4& v) { return v.normalize(); }
 
+// --- mat3 ---
+
+mat3::mat3() : e{} {}
+mat3::mat3(float32 d) : e{d, 0, 0, 0, d, 0, 0, 0, d} {}
+mat3::mat3(const mat4& m) : e{m.e[0], m.e[1], m.e[2], m.e[4], m.e[5], m.e[6], m.e[8], m.e[9], m.e[10]} {}
+
+mat3 mat3::add(const mat3& o) const {
+    mat3 r;
+    r.e[0] = e[0] + o.e[0]; r.e[1] = e[1] + o.e[1]; r.e[2] = e[2] + o.e[2];
+    r.e[3] = e[3] + o.e[3]; r.e[4] = e[4] + o.e[4]; r.e[5] = e[5] + o.e[5];
+    r.e[6] = e[6] + o.e[6]; r.e[7] = e[7] + o.e[7]; r.e[8] = e[8] + o.e[8];
+    return r;
+}
+mat3 mat3::add(float32 s) const {
+    mat3 r;
+    r.e[0] = e[0] + s; r.e[1] = e[1] + s; r.e[2] = e[2] + s;
+    r.e[3] = e[3] + s; r.e[4] = e[4] + s; r.e[5] = e[5] + s;
+    r.e[6] = e[6] + s; r.e[7] = e[7] + s; r.e[8] = e[8] + s;
+    return r;
+}
+mat3 mat3::sub(const mat3& o) const {
+    mat3 r;
+    r.e[0] = e[0] - o.e[0]; r.e[1] = e[1] - o.e[1]; r.e[2] = e[2] - o.e[2];
+    r.e[3] = e[3] - o.e[3]; r.e[4] = e[4] - o.e[4]; r.e[5] = e[5] - o.e[5];
+    r.e[6] = e[6] - o.e[6]; r.e[7] = e[7] - o.e[7]; r.e[8] = e[8] - o.e[8];
+    return r;
+}
+mat3 mat3::sub(float32 s) const {
+    mat3 r;
+    r.e[0] = e[0] - s; r.e[1] = e[1] - s; r.e[2] = e[2] - s;
+    r.e[3] = e[3] - s; r.e[4] = e[4] - s; r.e[5] = e[5] - s;
+    r.e[6] = e[6] - s; r.e[7] = e[7] - s; r.e[8] = e[8] - s;
+    return r;
+}
+mat3 mat3::mul(const mat3& o) const {
+    mat3 r;
+    r.e[0] = e[0]*o.e[0] + e[3]*o.e[1] + e[6]*o.e[2];
+    r.e[1] = e[1]*o.e[0] + e[4]*o.e[1] + e[7]*o.e[2];
+    r.e[2] = e[2]*o.e[0] + e[5]*o.e[1] + e[8]*o.e[2];
+    r.e[3] = e[0]*o.e[3] + e[3]*o.e[4] + e[6]*o.e[5];
+    r.e[4] = e[1]*o.e[3] + e[4]*o.e[4] + e[7]*o.e[5];
+    r.e[5] = e[2]*o.e[3] + e[5]*o.e[4] + e[8]*o.e[5];
+    r.e[6] = e[0]*o.e[6] + e[3]*o.e[7] + e[6]*o.e[8];
+    r.e[7] = e[1]*o.e[6] + e[4]*o.e[7] + e[7]*o.e[8];
+    r.e[8] = e[2]*o.e[6] + e[5]*o.e[7] + e[8]*o.e[8];
+    return r;
+}
+mat3 mat3::mul(float32 s) const {
+    mat3 r;
+    r.e[0] = e[0]*s; r.e[1] = e[1]*s; r.e[2] = e[2]*s;
+    r.e[3] = e[3]*s; r.e[4] = e[4]*s; r.e[5] = e[5]*s;
+    r.e[6] = e[6]*s; r.e[7] = e[7]*s; r.e[8] = e[8]*s;
+    return r;
+}
+vec3 mat3::mul(const vec3& v) const {
+    return vec3(
+        e[0]*v.x + e[3]*v.y + e[6]*v.z,
+        e[1]*v.x + e[4]*v.y + e[7]*v.z,
+        e[2]*v.x + e[5]*v.y + e[8]*v.z
+    );
+}
+mat3 mat3::div(const mat3& o) const {
+    mat3 r;
+    r.e[0] = e[0] / o.e[0]; r.e[1] = e[1] / o.e[1]; r.e[2] = e[2] / o.e[2];
+    r.e[3] = e[3] / o.e[3]; r.e[4] = e[4] / o.e[4]; r.e[5] = e[5] / o.e[5];
+    r.e[6] = e[6] / o.e[6]; r.e[7] = e[7] / o.e[7]; r.e[8] = e[8] / o.e[8];
+    return r;
+}
+mat3 mat3::div(float32 s) const {
+    mat3 r;
+    r.e[0] = e[0] / s; r.e[1] = e[1] / s; r.e[2] = e[2] / s;
+    r.e[3] = e[3] / s; r.e[4] = e[4] / s; r.e[5] = e[5] / s;
+    r.e[6] = e[6] / s; r.e[7] = e[7] / s; r.e[8] = e[8] / s;
+    return r;
+}
+
+mat3& mat3::operator+=(const mat3& o) {
+    e[0]+=o.e[0]; e[1]+=o.e[1]; e[2]+=o.e[2];
+    e[3]+=o.e[3]; e[4]+=o.e[4]; e[5]+=o.e[5];
+    e[6]+=o.e[6]; e[7]+=o.e[7]; e[8]+=o.e[8];
+    return *this;
+}
+mat3& mat3::operator+=(float32 s) {
+    e[0]+=s; e[1]+=s; e[2]+=s; e[3]+=s; e[4]+=s; e[5]+=s; e[6]+=s; e[7]+=s; e[8]+=s;
+    return *this;
+}
+mat3& mat3::operator-=(const mat3& o) {
+    e[0]-=o.e[0]; e[1]-=o.e[1]; e[2]-=o.e[2];
+    e[3]-=o.e[3]; e[4]-=o.e[4]; e[5]-=o.e[5];
+    e[6]-=o.e[6]; e[7]-=o.e[7]; e[8]-=o.e[8];
+    return *this;
+}
+mat3& mat3::operator-=(float32 s) {
+    e[0]-=s; e[1]-=s; e[2]-=s; e[3]-=s; e[4]-=s; e[5]-=s; e[6]-=s; e[7]-=s; e[8]-=s;
+    return *this;
+}
+mat3& mat3::operator*=(const mat3& o) { *this = mul(o); return *this; }
+mat3& mat3::operator*=(float32 s) {
+    e[0]*=s; e[1]*=s; e[2]*=s; e[3]*=s; e[4]*=s; e[5]*=s; e[6]*=s; e[7]*=s; e[8]*=s;
+    return *this;
+}
+mat3& mat3::operator/=(const mat3& o) {
+    e[0]/=o.e[0]; e[1]/=o.e[1]; e[2]/=o.e[2];
+    e[3]/=o.e[3]; e[4]/=o.e[4]; e[5]/=o.e[5];
+    e[6]/=o.e[6]; e[7]/=o.e[7]; e[8]/=o.e[8];
+    return *this;
+}
+mat3& mat3::operator/=(float32 s) {
+    e[0]/=s; e[1]/=s; e[2]/=s; e[3]/=s; e[4]/=s; e[5]/=s; e[6]/=s; e[7]/=s; e[8]/=s;
+    return *this;
+}
+
+float32 mat3::determinant() const {
+    return e[0] * (e[4]*e[8] - e[7]*e[5])
+         - e[3] * (e[1]*e[8] - e[7]*e[2])
+         + e[6] * (e[1]*e[5] - e[4]*e[2]);
+}
+mat3 mat3::transpose() const {
+    mat3 r;
+    r.e[0] = e[0]; r.e[1] = e[3]; r.e[2] = e[6];
+    r.e[3] = e[1]; r.e[4] = e[4]; r.e[5] = e[7];
+    r.e[6] = e[2]; r.e[7] = e[5]; r.e[8] = e[8];
+    return r;
+}
+// returns zero matrix if singular
+mat3 mat3::inverse() const {
+    float32 d = determinant();
+    if (std::abs(d) < EPSILON) { return mat3(0.0f); }
+    float32 inv = 1.0f / d;
+    mat3 r;
+    r.e[0] = ( e[4]*e[8] - e[7]*e[5]) * inv;
+    r.e[1] = (-e[1]*e[8] + e[7]*e[2]) * inv;
+    r.e[2] = ( e[1]*e[5] - e[4]*e[2]) * inv;
+    r.e[3] = (-e[3]*e[8] + e[6]*e[5]) * inv;
+    r.e[4] = ( e[0]*e[8] - e[6]*e[2]) * inv;
+    r.e[5] = (-e[0]*e[5] + e[3]*e[2]) * inv;
+    r.e[6] = ( e[3]*e[7] - e[6]*e[4]) * inv;
+    r.e[7] = (-e[0]*e[7] + e[6]*e[1]) * inv;
+    r.e[8] = ( e[0]*e[4] - e[3]*e[1]) * inv;
+    return r;
+}
+float32 mat3::trace() const { return e[0] + e[4] + e[8]; }
+
+mat3 add(const mat3& a, const mat3& b) { return a.add(b); }
+mat3 add(const mat3& m, float32 s)     { return m.add(s); }
+mat3 add(float32 s, const mat3& m)     { return m.add(s); }
+mat3 sub(const mat3& a, const mat3& b) { return a.sub(b); }
+mat3 sub(const mat3& m, float32 s)     { return m.sub(s); }
+mat3 sub(float32 s, const mat3& m) {
+    mat3 r;
+    r.e[0] = s-m.e[0]; r.e[1] = s-m.e[1]; r.e[2] = s-m.e[2];
+    r.e[3] = s-m.e[3]; r.e[4] = s-m.e[4]; r.e[5] = s-m.e[5];
+    r.e[6] = s-m.e[6]; r.e[7] = s-m.e[7]; r.e[8] = s-m.e[8];
+    return r;
+}
+mat3 mul(const mat3& a, const mat3& b)     { return a.mul(b); }
+mat3 mul(const mat3& m, float32 s)         { return m.mul(s); }
+mat3 mul(float32 s, const mat3& m)         { return m.mul(s); }
+vec3 mul(const mat3& m, const vec3& v)     { return m.mul(v); }
+mat3 div(const mat3& a, const mat3& b)     { return a.div(b); }
+mat3 div(const mat3& m, float32 s)         { return m.div(s); }
+mat3 div(float32 s, const mat3& m) {
+    mat3 r;
+    r.e[0] = s/m.e[0]; r.e[1] = s/m.e[1]; r.e[2] = s/m.e[2];
+    r.e[3] = s/m.e[3]; r.e[4] = s/m.e[4]; r.e[5] = s/m.e[5];
+    r.e[6] = s/m.e[6]; r.e[7] = s/m.e[7]; r.e[8] = s/m.e[8];
+    return r;
+}
+
+mat3 operator+(const mat3& a, const mat3& b) { return a.add(b); }
+mat3 operator+(const mat3& m, float32 s)     { return m.add(s); }
+mat3 operator+(float32 s, const mat3& m)     { return m.add(s); }
+mat3 operator-(const mat3& a, const mat3& b) { return a.sub(b); }
+mat3 operator-(const mat3& m, float32 s)     { return m.sub(s); }
+mat3 operator-(float32 s, const mat3& m)     { return sub(s, m); }
+mat3 operator*(const mat3& a, const mat3& b) { return a.mul(b); }
+mat3 operator*(const mat3& m, float32 s)     { return m.mul(s); }
+mat3 operator*(float32 s, const mat3& m)     { return m.mul(s); }
+vec3 operator*(const mat3& m, const vec3& v) { return m.mul(v); }
+mat3 operator/(const mat3& a, const mat3& b) { return a.div(b); }
+mat3 operator/(const mat3& m, float32 s)     { return m.div(s); }
+mat3 operator/(float32 s, const mat3& m)     { return div(s, m); }
+
+float32 determinant(const mat3& m) { return m.determinant(); }
+mat3 transpose(const mat3& m)      { return m.transpose(); }
+mat3 inverse(const mat3& m)        { return m.inverse(); }
+float32 trace(const mat3& m)       { return m.trace(); }
+
+// --- mat4 ---
+
+mat4::mat4() : e{} {}
+mat4::mat4(float32 d) : e{d, 0, 0, 0, 0, d, 0, 0, 0, 0, d, 0, 0, 0, 0, d} {}
+mat4::mat4(const mat3& m, float32 d) : e{
+    m.e[0], m.e[1], m.e[2], 0.0f,
+    m.e[3], m.e[4], m.e[5], 0.0f,
+    m.e[6], m.e[7], m.e[8], 0.0f,
+    0.0f,   0.0f,   0.0f,   d
+} {}
+
+mat4 mat4::add(const mat4& o) const {
+    mat4 r;
+    r.e[ 0]=e[ 0]+o.e[ 0]; r.e[ 1]=e[ 1]+o.e[ 1]; r.e[ 2]=e[ 2]+o.e[ 2]; r.e[ 3]=e[ 3]+o.e[ 3];
+    r.e[ 4]=e[ 4]+o.e[ 4]; r.e[ 5]=e[ 5]+o.e[ 5]; r.e[ 6]=e[ 6]+o.e[ 6]; r.e[ 7]=e[ 7]+o.e[ 7];
+    r.e[ 8]=e[ 8]+o.e[ 8]; r.e[ 9]=e[ 9]+o.e[ 9]; r.e[10]=e[10]+o.e[10]; r.e[11]=e[11]+o.e[11];
+    r.e[12]=e[12]+o.e[12]; r.e[13]=e[13]+o.e[13]; r.e[14]=e[14]+o.e[14]; r.e[15]=e[15]+o.e[15];
+    return r;
+}
+mat4 mat4::add(float32 s) const {
+    mat4 r;
+    r.e[ 0]=e[ 0]+s; r.e[ 1]=e[ 1]+s; r.e[ 2]=e[ 2]+s; r.e[ 3]=e[ 3]+s;
+    r.e[ 4]=e[ 4]+s; r.e[ 5]=e[ 5]+s; r.e[ 6]=e[ 6]+s; r.e[ 7]=e[ 7]+s;
+    r.e[ 8]=e[ 8]+s; r.e[ 9]=e[ 9]+s; r.e[10]=e[10]+s; r.e[11]=e[11]+s;
+    r.e[12]=e[12]+s; r.e[13]=e[13]+s; r.e[14]=e[14]+s; r.e[15]=e[15]+s;
+    return r;
+}
+mat4 mat4::sub(const mat4& o) const {
+    mat4 r;
+    r.e[ 0]=e[ 0]-o.e[ 0]; r.e[ 1]=e[ 1]-o.e[ 1]; r.e[ 2]=e[ 2]-o.e[ 2]; r.e[ 3]=e[ 3]-o.e[ 3];
+    r.e[ 4]=e[ 4]-o.e[ 4]; r.e[ 5]=e[ 5]-o.e[ 5]; r.e[ 6]=e[ 6]-o.e[ 6]; r.e[ 7]=e[ 7]-o.e[ 7];
+    r.e[ 8]=e[ 8]-o.e[ 8]; r.e[ 9]=e[ 9]-o.e[ 9]; r.e[10]=e[10]-o.e[10]; r.e[11]=e[11]-o.e[11];
+    r.e[12]=e[12]-o.e[12]; r.e[13]=e[13]-o.e[13]; r.e[14]=e[14]-o.e[14]; r.e[15]=e[15]-o.e[15];
+    return r;
+}
+mat4 mat4::sub(float32 s) const {
+    mat4 r;
+    r.e[ 0]=e[ 0]-s; r.e[ 1]=e[ 1]-s; r.e[ 2]=e[ 2]-s; r.e[ 3]=e[ 3]-s;
+    r.e[ 4]=e[ 4]-s; r.e[ 5]=e[ 5]-s; r.e[ 6]=e[ 6]-s; r.e[ 7]=e[ 7]-s;
+    r.e[ 8]=e[ 8]-s; r.e[ 9]=e[ 9]-s; r.e[10]=e[10]-s; r.e[11]=e[11]-s;
+    r.e[12]=e[12]-s; r.e[13]=e[13]-s; r.e[14]=e[14]-s; r.e[15]=e[15]-s;
+    return r;
+}
+mat4 mat4::mul(const mat4& o) const {
+    mat4 r;
+    r.e[ 0] = e[0]*o.e[ 0] + e[4]*o.e[ 1] + e[ 8]*o.e[ 2] + e[12]*o.e[ 3];
+    r.e[ 1] = e[1]*o.e[ 0] + e[5]*o.e[ 1] + e[ 9]*o.e[ 2] + e[13]*o.e[ 3];
+    r.e[ 2] = e[2]*o.e[ 0] + e[6]*o.e[ 1] + e[10]*o.e[ 2] + e[14]*o.e[ 3];
+    r.e[ 3] = e[3]*o.e[ 0] + e[7]*o.e[ 1] + e[11]*o.e[ 2] + e[15]*o.e[ 3];
+    r.e[ 4] = e[0]*o.e[ 4] + e[4]*o.e[ 5] + e[ 8]*o.e[ 6] + e[12]*o.e[ 7];
+    r.e[ 5] = e[1]*o.e[ 4] + e[5]*o.e[ 5] + e[ 9]*o.e[ 6] + e[13]*o.e[ 7];
+    r.e[ 6] = e[2]*o.e[ 4] + e[6]*o.e[ 5] + e[10]*o.e[ 6] + e[14]*o.e[ 7];
+    r.e[ 7] = e[3]*o.e[ 4] + e[7]*o.e[ 5] + e[11]*o.e[ 6] + e[15]*o.e[ 7];
+    r.e[ 8] = e[0]*o.e[ 8] + e[4]*o.e[ 9] + e[ 8]*o.e[10] + e[12]*o.e[11];
+    r.e[ 9] = e[1]*o.e[ 8] + e[5]*o.e[ 9] + e[ 9]*o.e[10] + e[13]*o.e[11];
+    r.e[10] = e[2]*o.e[ 8] + e[6]*o.e[ 9] + e[10]*o.e[10] + e[14]*o.e[11];
+    r.e[11] = e[3]*o.e[ 8] + e[7]*o.e[ 9] + e[11]*o.e[10] + e[15]*o.e[11];
+    r.e[12] = e[0]*o.e[12] + e[4]*o.e[13] + e[ 8]*o.e[14] + e[12]*o.e[15];
+    r.e[13] = e[1]*o.e[12] + e[5]*o.e[13] + e[ 9]*o.e[14] + e[13]*o.e[15];
+    r.e[14] = e[2]*o.e[12] + e[6]*o.e[13] + e[10]*o.e[14] + e[14]*o.e[15];
+    r.e[15] = e[3]*o.e[12] + e[7]*o.e[13] + e[11]*o.e[14] + e[15]*o.e[15];
+    return r;
+}
+mat4 mat4::mul(float32 s) const {
+    mat4 r;
+    r.e[ 0]=e[ 0]*s; r.e[ 1]=e[ 1]*s; r.e[ 2]=e[ 2]*s; r.e[ 3]=e[ 3]*s;
+    r.e[ 4]=e[ 4]*s; r.e[ 5]=e[ 5]*s; r.e[ 6]=e[ 6]*s; r.e[ 7]=e[ 7]*s;
+    r.e[ 8]=e[ 8]*s; r.e[ 9]=e[ 9]*s; r.e[10]=e[10]*s; r.e[11]=e[11]*s;
+    r.e[12]=e[12]*s; r.e[13]=e[13]*s; r.e[14]=e[14]*s; r.e[15]=e[15]*s;
+    return r;
+}
+vec4 mat4::mul(const vec4& v) const {
+    return vec4(
+        e[0]*v.x + e[4]*v.y + e[ 8]*v.z + e[12]*v.w,
+        e[1]*v.x + e[5]*v.y + e[ 9]*v.z + e[13]*v.w,
+        e[2]*v.x + e[6]*v.y + e[10]*v.z + e[14]*v.w,
+        e[3]*v.x + e[7]*v.y + e[11]*v.z + e[15]*v.w
+    );
+}
+mat4 mat4::div(const mat4& o) const {
+    mat4 r;
+    r.e[ 0]=e[ 0]/o.e[ 0]; r.e[ 1]=e[ 1]/o.e[ 1]; r.e[ 2]=e[ 2]/o.e[ 2]; r.e[ 3]=e[ 3]/o.e[ 3];
+    r.e[ 4]=e[ 4]/o.e[ 4]; r.e[ 5]=e[ 5]/o.e[ 5]; r.e[ 6]=e[ 6]/o.e[ 6]; r.e[ 7]=e[ 7]/o.e[ 7];
+    r.e[ 8]=e[ 8]/o.e[ 8]; r.e[ 9]=e[ 9]/o.e[ 9]; r.e[10]=e[10]/o.e[10]; r.e[11]=e[11]/o.e[11];
+    r.e[12]=e[12]/o.e[12]; r.e[13]=e[13]/o.e[13]; r.e[14]=e[14]/o.e[14]; r.e[15]=e[15]/o.e[15];
+    return r;
+}
+mat4 mat4::div(float32 s) const {
+    mat4 r;
+    r.e[ 0]=e[ 0]/s; r.e[ 1]=e[ 1]/s; r.e[ 2]=e[ 2]/s; r.e[ 3]=e[ 3]/s;
+    r.e[ 4]=e[ 4]/s; r.e[ 5]=e[ 5]/s; r.e[ 6]=e[ 6]/s; r.e[ 7]=e[ 7]/s;
+    r.e[ 8]=e[ 8]/s; r.e[ 9]=e[ 9]/s; r.e[10]=e[10]/s; r.e[11]=e[11]/s;
+    r.e[12]=e[12]/s; r.e[13]=e[13]/s; r.e[14]=e[14]/s; r.e[15]=e[15]/s;
+    return r;
+}
+
+mat4& mat4::operator+=(const mat4& o) {
+    e[ 0]+=o.e[ 0]; e[ 1]+=o.e[ 1]; e[ 2]+=o.e[ 2]; e[ 3]+=o.e[ 3];
+    e[ 4]+=o.e[ 4]; e[ 5]+=o.e[ 5]; e[ 6]+=o.e[ 6]; e[ 7]+=o.e[ 7];
+    e[ 8]+=o.e[ 8]; e[ 9]+=o.e[ 9]; e[10]+=o.e[10]; e[11]+=o.e[11];
+    e[12]+=o.e[12]; e[13]+=o.e[13]; e[14]+=o.e[14]; e[15]+=o.e[15];
+    return *this;
+}
+mat4& mat4::operator+=(float32 s) {
+    e[ 0]+=s; e[ 1]+=s; e[ 2]+=s; e[ 3]+=s;
+    e[ 4]+=s; e[ 5]+=s; e[ 6]+=s; e[ 7]+=s;
+    e[ 8]+=s; e[ 9]+=s; e[10]+=s; e[11]+=s;
+    e[12]+=s; e[13]+=s; e[14]+=s; e[15]+=s;
+    return *this;
+}
+mat4& mat4::operator-=(const mat4& o) {
+    e[ 0]-=o.e[ 0]; e[ 1]-=o.e[ 1]; e[ 2]-=o.e[ 2]; e[ 3]-=o.e[ 3];
+    e[ 4]-=o.e[ 4]; e[ 5]-=o.e[ 5]; e[ 6]-=o.e[ 6]; e[ 7]-=o.e[ 7];
+    e[ 8]-=o.e[ 8]; e[ 9]-=o.e[ 9]; e[10]-=o.e[10]; e[11]-=o.e[11];
+    e[12]-=o.e[12]; e[13]-=o.e[13]; e[14]-=o.e[14]; e[15]-=o.e[15];
+    return *this;
+}
+mat4& mat4::operator-=(float32 s) {
+    e[ 0]-=s; e[ 1]-=s; e[ 2]-=s; e[ 3]-=s;
+    e[ 4]-=s; e[ 5]-=s; e[ 6]-=s; e[ 7]-=s;
+    e[ 8]-=s; e[ 9]-=s; e[10]-=s; e[11]-=s;
+    e[12]-=s; e[13]-=s; e[14]-=s; e[15]-=s;
+    return *this;
+}
+mat4& mat4::operator*=(const mat4& o) { *this = mul(o); return *this; }
+mat4& mat4::operator*=(float32 s) {
+    e[ 0]*=s; e[ 1]*=s; e[ 2]*=s; e[ 3]*=s;
+    e[ 4]*=s; e[ 5]*=s; e[ 6]*=s; e[ 7]*=s;
+    e[ 8]*=s; e[ 9]*=s; e[10]*=s; e[11]*=s;
+    e[12]*=s; e[13]*=s; e[14]*=s; e[15]*=s;
+    return *this;
+}
+mat4& mat4::operator/=(const mat4& o) {
+    e[ 0]/=o.e[ 0]; e[ 1]/=o.e[ 1]; e[ 2]/=o.e[ 2]; e[ 3]/=o.e[ 3];
+    e[ 4]/=o.e[ 4]; e[ 5]/=o.e[ 5]; e[ 6]/=o.e[ 6]; e[ 7]/=o.e[ 7];
+    e[ 8]/=o.e[ 8]; e[ 9]/=o.e[ 9]; e[10]/=o.e[10]; e[11]/=o.e[11];
+    e[12]/=o.e[12]; e[13]/=o.e[13]; e[14]/=o.e[14]; e[15]/=o.e[15];
+    return *this;
+}
+mat4& mat4::operator/=(float32 s) {
+    e[ 0]/=s; e[ 1]/=s; e[ 2]/=s; e[ 3]/=s;
+    e[ 4]/=s; e[ 5]/=s; e[ 6]/=s; e[ 7]/=s;
+    e[ 8]/=s; e[ 9]/=s; e[10]/=s; e[11]/=s;
+    e[12]/=s; e[13]/=s; e[14]/=s; e[15]/=s;
+    return *this;
+}
+
+float32 mat4::determinant() const {
+    float32 a0 = e[ 0]*e[ 5] - e[ 4]*e[ 1];
+    float32 a1 = e[ 0]*e[ 9] - e[ 8]*e[ 1];
+    float32 a2 = e[ 0]*e[13] - e[12]*e[ 1];
+    float32 a3 = e[ 4]*e[ 9] - e[ 8]*e[ 5];
+    float32 a4 = e[ 4]*e[13] - e[12]*e[ 5];
+    float32 a5 = e[ 8]*e[13] - e[12]*e[ 9];
+    float32 b0 = e[ 2]*e[ 7] - e[ 6]*e[ 3];
+    float32 b1 = e[ 2]*e[11] - e[10]*e[ 3];
+    float32 b2 = e[ 2]*e[15] - e[14]*e[ 3];
+    float32 b3 = e[ 6]*e[11] - e[10]*e[ 7];
+    float32 b4 = e[ 6]*e[15] - e[14]*e[ 7];
+    float32 b5 = e[10]*e[15] - e[14]*e[11];
+    return a0*b5 - a1*b4 + a2*b3 + a3*b2 - a4*b1 + a5*b0;
+}
+mat4 mat4::transpose() const {
+    mat4 r;
+    r.e[ 0]=e[ 0]; r.e[ 1]=e[ 4]; r.e[ 2]=e[ 8]; r.e[ 3]=e[12];
+    r.e[ 4]=e[ 1]; r.e[ 5]=e[ 5]; r.e[ 6]=e[ 9]; r.e[ 7]=e[13];
+    r.e[ 8]=e[ 2]; r.e[ 9]=e[ 6]; r.e[10]=e[10]; r.e[11]=e[14];
+    r.e[12]=e[ 3]; r.e[13]=e[ 7]; r.e[14]=e[11]; r.e[15]=e[15];
+    return r;
+}
+// returns zero matrix if singular
+mat4 mat4::inverse() const {
+    float32 a0 = e[ 0]*e[ 5] - e[ 4]*e[ 1];
+    float32 a1 = e[ 0]*e[ 9] - e[ 8]*e[ 1];
+    float32 a2 = e[ 0]*e[13] - e[12]*e[ 1];
+    float32 a3 = e[ 4]*e[ 9] - e[ 8]*e[ 5];
+    float32 a4 = e[ 4]*e[13] - e[12]*e[ 5];
+    float32 a5 = e[ 8]*e[13] - e[12]*e[ 9];
+    float32 b0 = e[ 2]*e[ 7] - e[ 6]*e[ 3];
+    float32 b1 = e[ 2]*e[11] - e[10]*e[ 3];
+    float32 b2 = e[ 2]*e[15] - e[14]*e[ 3];
+    float32 b3 = e[ 6]*e[11] - e[10]*e[ 7];
+    float32 b4 = e[ 6]*e[15] - e[14]*e[ 7];
+    float32 b5 = e[10]*e[15] - e[14]*e[11];
+    float32 d  = a0*b5 - a1*b4 + a2*b3 + a3*b2 - a4*b1 + a5*b0;
+    if (std::abs(d) < EPSILON) { return mat4(0.0f); }
+    float32 inv = 1.0f / d;
+    mat4 r;
+    r.e[ 0] = ( e[ 5]*b5 - e[ 9]*b4 + e[13]*b3) * inv;
+    r.e[ 1] = (-e[ 1]*b5 + e[ 9]*b2 - e[13]*b1) * inv;
+    r.e[ 2] = ( e[ 1]*b4 - e[ 5]*b2 + e[13]*b0) * inv;
+    r.e[ 3] = (-e[ 1]*b3 + e[ 5]*b1 - e[ 9]*b0) * inv;
+    r.e[ 4] = (-e[ 4]*b5 + e[ 8]*b4 - e[12]*b3) * inv;
+    r.e[ 5] = ( e[ 0]*b5 - e[ 8]*b2 + e[12]*b1) * inv;
+    r.e[ 6] = (-e[ 0]*b4 + e[ 4]*b2 - e[12]*b0) * inv;
+    r.e[ 7] = ( e[ 0]*b3 - e[ 4]*b1 + e[ 8]*b0) * inv;
+    r.e[ 8] = ( e[ 7]*a5 - e[11]*a4 + e[15]*a3) * inv;
+    r.e[ 9] = (-e[ 3]*a5 + e[11]*a2 - e[15]*a1) * inv;
+    r.e[10] = ( e[ 3]*a4 - e[ 7]*a2 + e[15]*a0) * inv;
+    r.e[11] = (-e[ 3]*a3 + e[ 7]*a1 - e[11]*a0) * inv;
+    r.e[12] = (-e[ 6]*a5 + e[10]*a4 - e[14]*a3) * inv;
+    r.e[13] = ( e[ 2]*a5 - e[10]*a2 + e[14]*a1) * inv;
+    r.e[14] = (-e[ 2]*a4 + e[ 6]*a2 - e[14]*a0) * inv;
+    r.e[15] = ( e[ 2]*a3 - e[ 6]*a1 + e[10]*a0) * inv;
+    return r;
+}
+float32 mat4::trace() const { return e[0] + e[5] + e[10] + e[15]; }
+
+mat4 add(const mat4& a, const mat4& b) { return a.add(b); }
+mat4 add(const mat4& m, float32 s)     { return m.add(s); }
+mat4 add(float32 s, const mat4& m)     { return m.add(s); }
+mat4 sub(const mat4& a, const mat4& b) { return a.sub(b); }
+mat4 sub(const mat4& m, float32 s)     { return m.sub(s); }
+mat4 sub(float32 s, const mat4& m) {
+    mat4 r;
+    r.e[ 0]=s-m.e[ 0]; r.e[ 1]=s-m.e[ 1]; r.e[ 2]=s-m.e[ 2]; r.e[ 3]=s-m.e[ 3];
+    r.e[ 4]=s-m.e[ 4]; r.e[ 5]=s-m.e[ 5]; r.e[ 6]=s-m.e[ 6]; r.e[ 7]=s-m.e[ 7];
+    r.e[ 8]=s-m.e[ 8]; r.e[ 9]=s-m.e[ 9]; r.e[10]=s-m.e[10]; r.e[11]=s-m.e[11];
+    r.e[12]=s-m.e[12]; r.e[13]=s-m.e[13]; r.e[14]=s-m.e[14]; r.e[15]=s-m.e[15];
+    return r;
+}
+mat4 mul(const mat4& a, const mat4& b)     { return a.mul(b); }
+mat4 mul(const mat4& m, float32 s)         { return m.mul(s); }
+mat4 mul(float32 s, const mat4& m)         { return m.mul(s); }
+vec4 mul(const mat4& m, const vec4& v)     { return m.mul(v); }
+mat4 div(const mat4& a, const mat4& b)     { return a.div(b); }
+mat4 div(const mat4& m, float32 s)         { return m.div(s); }
+mat4 div(float32 s, const mat4& m) {
+    mat4 r;
+    r.e[ 0]=s/m.e[ 0]; r.e[ 1]=s/m.e[ 1]; r.e[ 2]=s/m.e[ 2]; r.e[ 3]=s/m.e[ 3];
+    r.e[ 4]=s/m.e[ 4]; r.e[ 5]=s/m.e[ 5]; r.e[ 6]=s/m.e[ 6]; r.e[ 7]=s/m.e[ 7];
+    r.e[ 8]=s/m.e[ 8]; r.e[ 9]=s/m.e[ 9]; r.e[10]=s/m.e[10]; r.e[11]=s/m.e[11];
+    r.e[12]=s/m.e[12]; r.e[13]=s/m.e[13]; r.e[14]=s/m.e[14]; r.e[15]=s/m.e[15];
+    return r;
+}
+
+mat4 operator+(const mat4& a, const mat4& b) { return a.add(b); }
+mat4 operator+(const mat4& m, float32 s)     { return m.add(s); }
+mat4 operator+(float32 s, const mat4& m)     { return m.add(s); }
+mat4 operator-(const mat4& a, const mat4& b) { return a.sub(b); }
+mat4 operator-(const mat4& m, float32 s)     { return m.sub(s); }
+mat4 operator-(float32 s, const mat4& m)     { return sub(s, m); }
+mat4 operator*(const mat4& a, const mat4& b) { return a.mul(b); }
+mat4 operator*(const mat4& m, float32 s)     { return m.mul(s); }
+mat4 operator*(float32 s, const mat4& m)     { return m.mul(s); }
+vec4 operator*(const mat4& m, const vec4& v) { return m.mul(v); }
+mat4 operator/(const mat4& a, const mat4& b) { return a.div(b); }
+mat4 operator/(const mat4& m, float32 s)     { return m.div(s); }
+mat4 operator/(float32 s, const mat4& m)     { return div(s, m); }
+
+float32 determinant(const mat4& m) { return m.determinant(); }
+mat4 transpose(const mat4& m)      { return m.transpose(); }
+mat4 inverse(const mat4& m)        { return m.inverse(); }
+float32 trace(const mat4& m)       { return m.trace(); }
+
 } // namespace m3d
