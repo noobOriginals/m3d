@@ -25,7 +25,17 @@ m3d/
 
 ## Architecture
 
-All public API lives in a single header: `src/include/kiroshi.hpp`. Implementations are in `src/sources/kiroshi.cpp`.
+All public API lives in a single header: `src/include/m3d.hpp`. Implementations are in `src/sources/m3d.cpp`.
+
+## EPSILON
+
+`EPSILON = 1e-6` is defined for floating point comparisons. Use it as a zero-guard in `normalize()` and `inverse()`, and for approximate equality checks in tests.
+
+## Development phases
+
+- Phase 1: `vec2`, `vec3`, `vec4`
+- Phase 2: `mat3`, `mat4` (core ops, `determinant`, `inverse`, `transpose`, `trace`)
+- Phase 3: transform helpers (`translate`, `rotate`, `scale`, `perspective`, `ortho`, `lookAt`)
 
 ## Code conventions  
 
@@ -83,7 +93,7 @@ cmake -B build -S .
 cmake --build build --config Debug -j16
 ```
 
-Output lands in `bin/`. On Windows with MSVC the executable is at `bin/Debug/Kiroshi.exe`; on Linux/Mac it is `bin/Kiroshi`.
+Output lands in `bin/`. On Windows with MSVC the executable is at `bin/Debug/m3d.exe`; on Linux/Mac it is `bin/m3d`.
 
 Tests are written in `src/sources/main.cpp` — edit it, add/remove tests as necessary and rebuild to verify changes.
 
@@ -91,13 +101,13 @@ Tests are written in `src/sources/main.cpp` — edit it, add/remove tests as nec
 
 `vec2`, `vec3` and `vec4`.  
 Each type provides:  
-- Internal `float32 x, y, z;` components.
+- Internal `float32` components: `x, y` for `vec2`; `x, y, z` for `vec3`; `x, y, z, w` for `vec4`.
 - Default constructors, single-scalar initialization and element-wise initialization constructors.
 - Constructors for casting from a vector type to another (e.g. `vec3(const vec4& v)` or `vec3(const vec2& v, float32 z = 0.0f)`)
 - Element-wise arithmetic operations (`add()`, `sub()`, `mul()`, `div()`) both between two vectors (of the same type) or a vector and a scalar.
 - Operations are implemented as an instance method (`vec3().add(vec3())`).
-- Outside of the struct type, "static" method equivalents for the instance methods are provided + reversed order scalar-vector operations (`add(float32 scalar, vec3 vector)`).
-- For each "static" method, an overloaded operator provided (`+`, `-`, `*`, `/`).
+- Outside of the struct, namespace-level free function equivalents for the instance methods are provided + reversed order scalar-vector operations (`add(float32 scalar, vec3 vector)`).
+- For each free function, an overloaded operator provided (`+`, `-`, `*`, `/`).
 - `+=`, `-=`, `*=`, `/=` operators.
 - `lenSq()`, `len()` and `normalize()` functions.  
 
@@ -108,7 +118,7 @@ Each type provides:
 
 `mat3` and `mat4`.  
 Each type provides:
-- Internal `float32 e[]` linear storage in column-major order, as per OpenGL convention.
+- Internal `float32 e[]` linear storage in column-major order, as per OpenGL convention. Index as `e[col * N + row]` where N is 3 or 4.
 - Default constructors and diagonal initialization constructors with one scalar (`mat3(float32 diagonal)`)
 - Constructors for casting from a matrix type to another (e.g. `mat3(const mat4& m)` or `mat4(const mat3& m, float32 d = 0.0f)`)
 - Element-wise adition, subtraction and division both matrix-matrix and matrix-scalar
