@@ -33,9 +33,19 @@ All public API lives in a single header: `src/include/m3d.hpp`. Implementations 
 
 ## Development phases
 
-- Phase 1: `vec2`, `vec3`, `vec4`
-- Phase 2: `mat3`, `mat4` (core ops, `determinant`, `inverse`, `transpose`, `trace`)
+- Phase 1: `vec2`, `vec3`, `vec4` — COMPLETE
+- Phase 2: `mat3`, `mat4` (core ops, `determinant`, `inverse`, `transpose`, `trace`) — next
 - Phase 3: transform helpers (`translate`, `rotate`, `scale`, `perspective`, `ortho`, `lookAt`)
+
+## Current status
+
+Phase 1 is complete. All three vector types are implemented and tested in `src/sources/main.cpp`.
+
+Key implementation decisions made in Phase 1:
+- Truncating cast constructors (`vec2(const vec3&)`, `vec2(const vec4&)`, `vec3(const vec4&)`) are marked `explicit` to prevent silent data loss via implicit conversion.
+- Extending cast constructors (`vec3(const vec2&, float32 z = 0.0f)`, `vec4(const vec3&, float32 w = 0.0f)`, `vec4(const vec2&, float32 z, float32 w)`) are non-explicit.
+- `normalize()` returns a zero vector when length is below `EPSILON`.
+- `std::sqrt` and `std::abs` are included via `<cmath>` in `m3d.cpp` only.
 
 ## Code conventions  
 
