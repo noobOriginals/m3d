@@ -943,13 +943,13 @@ float32 trace(const mat3& m) {
 }
 
 mat3 mat3::translate(const vec2& t) const {
-    return mul(translate(t));
+    return mul(m3d::translate(t));
 }
 mat3 mat3::rotate(float32 a) const {
-    return mul(rotate(a));
+    return mul(m3d::rotate(a));
 }
 mat3 mat3::scale(const vec2& sv) const {
-    return mul(scale(sv));
+    return mul(m3d::scale(sv));
 }
 
 mat3 translate(const vec2& t) {
@@ -1520,22 +1520,22 @@ float32 trace(const mat4& m) {
 }
 
 mat4 mat4::translate(const vec3& t) const {
-    return mul(translate(t));
+    return mul(m3d::translate(t));
 }
 mat4 mat4::rotate(float32 a, const vec3& axis) const {
-    return mul(rotate(a, axis));
+    return mul(m3d::rotate(a, axis));
 }
 mat4 mat4::scale(const vec3& sv) const {
-    return mul(scale(sv));
+    return mul(m3d::scale(sv));
 }
 mat4 mat4::perspective(float32 fovy, float32 aspect, float32 zNear, float32 zFar) const {
-    return mul(perspective(fovy, aspect, zNear, zFar));
+    return mul(m3d::perspective(fovy, aspect, zNear, zFar));
 }
 mat4 mat4::ortho(float32 l, float32 r, float32 b, float32 t, float32 zNear, float32 zFar) const {
-    return mul(ortho(l, r, b, t, zNear, zFar));
+    return mul(m3d::ortho(l, r, b, t, zNear, zFar));
 }
 mat4 mat4::lookAt(const vec3& eye, const vec3& center, const vec3& up) const {
-    return mul(lookAt(eye, center, up));
+    return mul(m3d::lookAt(eye, center, up));
 }
 
 mat4 translate(const vec3& t) {
