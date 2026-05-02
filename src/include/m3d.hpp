@@ -39,6 +39,9 @@ struct vec2 {
     explicit vec2(const vec3& v);
     explicit vec2(const vec4& v);
 
+    vec2 neg() const;
+    vec2 inv() const;
+
     vec2 add(const vec2& other) const;
     vec2 add(float32 s) const;
     vec2 sub(const vec2& other) const;
@@ -64,6 +67,9 @@ struct vec2 {
     float32 dot(const vec2& other) const;
     float32 cross(const vec2& other) const;
 };
+
+vec2 neg(const vec2& v);
+vec2 inv(const vec2& v);
 
 vec2 add(const vec2& a, const vec2& b);
 vec2 add(const vec2& v, float32 s);
@@ -108,6 +114,9 @@ struct vec3 {
     vec3(const vec2& v, float32 z = 0.0f);
     explicit vec3(const vec4& v);
 
+    vec3 neg() const;
+    vec3 inv() const;
+
     vec3 add(const vec3& other) const;
     vec3 add(float32 s) const;
     vec3 sub(const vec3& other) const;
@@ -133,6 +142,9 @@ struct vec3 {
     float32 dot(const vec3& other) const;
     vec3 cross(const vec3& other) const;
 };
+
+vec3 neg(const vec3& v);
+vec3 inv(const vec3& v);
 
 vec3 add(const vec3& a, const vec3& b);
 vec3 add(const vec3& v, float32 s);
@@ -177,6 +189,9 @@ struct vec4 {
     vec4(const vec3& v, float32 w = 0.0f);
     vec4(const vec2& v, float32 z = 0.0f, float32 w = 0.0f);
 
+    vec4 neg() const;
+    vec4 inv() const;
+
     vec4 add(const vec4& other) const;
     vec4 add(float32 s) const;
     vec4 sub(const vec4& other) const;
@@ -199,6 +214,9 @@ struct vec4 {
     float32 len() const;
     vec4 normalize() const;
 };
+
+vec4 neg(const vec4& v);
+vec4 inv(const vec4& v);
 
 vec4 add(const vec4& a, const vec4& b);
 vec4 add(const vec4& v, float32 s);

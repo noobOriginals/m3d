@@ -18,6 +18,13 @@ vec2::vec2(float32 x, float32 y) : x(x), y(y) {}
 vec2::vec2(const vec3& v) : x(v.x), y(v.y) {}
 vec2::vec2(const vec4& v) : x(v.x), y(v.y) {}
 
+vec2 vec2::neg() const {
+    return vec2(-x, -y);
+}
+vec2 vec2::inv() const {
+    return vec2(1.0f / x, 1.0f / y);
+}
+
 vec2 vec2::add(const vec2& o) const {
     return vec2(x + o.x, y + o.y);
 }
@@ -197,6 +204,13 @@ vec2 normalize(const vec2& v) {
     return v.normalize();
 }
 
+vec2 neg(const vec2& v) {
+    return v.neg();
+}
+vec2 inv(const vec2& v) {
+    return v.inv();
+}
+
 // --- vec3 ---
 
 vec3::vec3() : x(0.0f), y(0.0f), z(0.0f) {}
@@ -204,6 +218,13 @@ vec3::vec3(float32 s) : x(s), y(s), z(s) {}
 vec3::vec3(float32 x, float32 y, float32 z) : x(x), y(y), z(z) {}
 vec3::vec3(const vec2& v, float32 z) : x(v.x), y(v.y), z(z) {}
 vec3::vec3(const vec4& v) : x(v.x), y(v.y), z(v.z) {}
+
+vec3 vec3::neg() const {
+    return vec3(-x, -y, -z);
+}
+vec3 vec3::inv() const {
+    return vec3(1.0f / x, 1.0f / y, 1.0f / z);
+}
 
 vec3 vec3::add(const vec3& o) const {
     return vec3(x + o.x, y + o.y, z + o.z);
@@ -393,6 +414,13 @@ vec3 normalize(const vec3& v) {
     return v.normalize();
 }
 
+vec3 neg(const vec3& v) {
+    return v.neg();
+}
+vec3 inv(const vec3& v) {
+    return v.inv();
+}
+
 // --- vec4 ---
 
 vec4::vec4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) {}
@@ -400,6 +428,13 @@ vec4::vec4(float32 s) : x(s), y(s), z(s), w(s) {}
 vec4::vec4(float32 x, float32 y, float32 z, float32 w) : x(x), y(y), z(z), w(w) {}
 vec4::vec4(const vec3& v, float32 w) : x(v.x), y(v.y), z(v.z), w(w) {}
 vec4::vec4(const vec2& v, float32 z, float32 w) : x(v.x), y(v.y), z(z), w(w) {}
+
+vec4 vec4::neg() const {
+    return vec4(-x, -y, -z, -w);
+}
+vec4 vec4::inv() const {
+    return vec4(1.0f / x, 1.0f / y, 1.0f / z, 1.0f / w);
+}
 
 vec4 vec4::add(const vec4& o) const {
     return vec4(x + o.x, y + o.y, z + o.z, w + o.w);
@@ -581,6 +616,13 @@ float32 len(const vec4& v) {
 }
 vec4 normalize(const vec4& v) {
     return v.normalize();
+}
+
+vec4 neg(const vec4& v) {
+    return v.neg();
+}
+vec4 inv(const vec4& v) {
+    return v.inv();
 }
 
 // --- mat3 ---

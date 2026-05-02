@@ -22,7 +22,13 @@ int main() {
         test("vec2 default ctor",    eq(vec2().x, 0.0f) && eq(vec2().y, 0.0f));
         test("vec2 scalar ctor",     eq(vec2(5.0f).x, 5.0f) && eq(vec2(5.0f).y, 5.0f));
 
-        vec2 r = a.add(b);
+        vec2 r = a.neg();
+        test("vec2 neg", eq(r.x, -1.0f) && eq(r.y, -2.0f));
+
+        r = a.inv();
+        test("vec2 inv", eq(r.x, 1.0f) && eq(r.y, 0.5f));
+
+        r = a.add(b);
         test("vec2 add",             eq(r.x, 4.0f) && eq(r.y, 6.0f));
         r = a.add(10.0f);
         test("vec2 add scalar",      eq(r.x, 11.0f) && eq(r.y, 12.0f));
@@ -96,7 +102,13 @@ int main() {
         test("vec3 from vec2 z",     eq(vec3(vec2(1.0f, 2.0f), 9.0f).z, 9.0f));
         test("vec3 from vec4",       eq(vec3(vec4(1.0f, 2.0f, 3.0f, 4.0f)).z, 3.0f));
 
-        vec3 r = a.add(b);
+        vec3 r = a.neg();
+        test("vec3 neg", eq(r.x, -1.0f) && eq(r.y, -2.0f) && eq(r.z, -3.0f));
+
+        r = a.inv();
+        test("vec3 inv", eq(r.x, 1.0f) && eq(r.y, 0.5f) && eq(r.z, 1.0f / 3.0f));
+
+        r = a.add(b);
         test("vec3 add",             eq(r.x, 5.0f) && eq(r.y, 7.0f) && eq(r.z, 9.0f));
         r = a - b;
         test("vec3 operator-",       eq(r.x, -3.0f) && eq(r.y, -3.0f) && eq(r.z, -3.0f));
@@ -134,7 +146,13 @@ int main() {
         test("vec4 from vec3 w",     eq(vec4(vec3(1.0f, 2.0f, 3.0f), 1.0f).w, 1.0f));
         test("vec4 from vec2",       eq(vec4(vec2(1.0f, 2.0f), 3.0f, 4.0f).z, 3.0f));
 
-        vec4 r = a.add(b);
+        vec4 r = a.neg();
+        test("vec4 neg", eq(r.x, -1.0f) && eq(r.y, -2.0f) && eq(r.z, -3.0f) && eq(r.w, -4.0f));
+
+        r = a.inv();
+        test("vec4 inv", eq(r.x, 1.0f) && eq(r.y, 0.5f) && eq(r.z, 1.0f / 3.0f) && eq(r.w, 0.25f));
+
+        r = a.add(b);
         test("vec4 add",             eq(r.x, 3.0f) && eq(r.y, 4.0f) && eq(r.z, 5.0f) && eq(r.w, 6.0f));
         r = a * 2.0f;
         test("vec4 operator* s",     eq(r.w, 8.0f));

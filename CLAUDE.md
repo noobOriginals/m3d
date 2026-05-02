@@ -133,6 +133,7 @@ Each type provides:
 - Internal `float32` components: `x, y` for `vec2`; `x, y, z` for `vec3`; `x, y, z, w` for `vec4`.
 - Default constructors, single-scalar initialization and element-wise initialization constructors.
 - Constructors for casting from a vector type to another (e.g. `vec3(const vec4& v)` or `vec3(const vec2& v, float32 z = 0.0f)`)
+- Element-wise negation (`a = -a`) and inverse (`a = 1.0f / a`) operations (`neg()`, `inv()`)
 - Element-wise arithmetic operations (`add()`, `sub()`, `mul()`, `div()`) both between two vectors (of the same type) or a vector and a scalar.
 - Operations are implemented as an instance method (`vec3().add(vec3())`).
 - Outside of the struct, namespace-level free function equivalents for the instance methods are provided + reversed order scalar-vector operations (`add(float32 scalar, vec3 vector)`).
