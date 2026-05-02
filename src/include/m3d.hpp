@@ -16,7 +16,11 @@ typedef unsigned long long uint64;
 typedef float float32;
 typedef double float64;
 
+const float64 PI = 3.141592653589793238462643383279502884197169399375105820974944592307816406286;
 const float32 EPSILON = 1e-6f;
+
+float64 degToRad(float64 deg);
+float64 radToDeg(float64 rad);
 
 struct vec2;
 struct vec3;

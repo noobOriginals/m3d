@@ -31,9 +31,16 @@ All public API lives in a single header: `src/include/m3d.hpp`. Implementations 
 
 `EPSILON = 1e-6` is defined for floating point comparisons. Use it as a zero-guard in `normalize()` and `inverse()`, and for approximate equality checks in tests.
 
+## PI
+
+`PI = 3.141592653589793238462643383279502884197169399375105820974944592307816406286` is defined for utility conversion functions from radians to degrees and vice versa.  
+Utility conversion functions are:
+- `float64 degToRad(float64 rad)`
+- `float64 radToDeg(float64 deg)`
+
 ## Development phases
 
-- Phase 1: `vec2`, `vec3`, `vec4` — COMPLETE
+- Phase 1: `vec2`, `vec3`, `vec4` and utility conversion (`degToRad()` and `radToDeg`) — COMPLETE
 - Phase 2: `mat3`, `mat4` (core ops, `determinant`, `inverse`, `transpose`, `trace`) — COMPLETE
 - Phase 3: transform helpers (`translate`, `rotate`, `scale`, `perspective`, `ortho`, `lookAt`) — COMPLETE
 
@@ -101,9 +108,9 @@ struct mat4;
 
 // Code definitions go here
 
-} // namespace m3d
+}  // namespace m3d
 
-#endif // M3D_HPP
+#endif  // M3D_HPP
 ```
 
 ## Build
@@ -146,6 +153,6 @@ Each type provides:
 - Element-wise adition, subtraction and division both matrix-matrix and matrix-scalar
 - Matrix–matrix and matrix–vector multiplication
 - `determinant()`, `transpose()`, `inverse()`, `trace()`
-- `mat3` (2D transform as a `mat3`) and `mat4` (3D transforms) transform helpers: `translate()`, `rotate()`, `scale()`
+- `mat3` (2D transform as a `mat3`) and `mat4` (3D transforms) FREE transform helpers: `translate()`, `rotate()`, `scale()` (also added as transforms for each type, but the creation of the transform matrixitself takes place in a free function)
 
-`mat4` also provides `perspective()`, `ortho()`, `lookAt()` transform helpers
+`mat4` also provides `perspective()`, `ortho()`, `lookAt()` transform helpers (same concept as before: free methods create the transform matrix, member functions use them)
