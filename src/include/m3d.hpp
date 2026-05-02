@@ -229,7 +229,7 @@ vec4 normalize(const vec4& v);
 // --- mat3 ---
 
 struct mat3 {
-    float32 e[9]; // column-major: e[col * 3 + row]
+    float32 e[9];  // column-major: e[col * 3 + row]
 
     mat3();
     mat3(float32 diagonal);
@@ -307,7 +307,7 @@ mat3 scale(const mat3& m, const vec2& s);
 // --- mat4 ---
 
 struct mat4 {
-    float32 e[16]; // column-major: e[col * 4 + row]
+    float32 e[16];  // column-major: e[col * 4 + row]
 
     mat4();
     mat4(float32 diagonal);
@@ -391,6 +391,6 @@ mat4 ortho(const mat4& m, float32 left, float32 right, float32 bottom, float32 t
 mat4 lookAt(const vec3& eye, const vec3& center, const vec3& up);
 mat4 lookAt(const mat4& m, const vec3& eye, const vec3& center, const vec3& up);
 
-} // namespace m3d
+}  // namespace m3d
 
-#endif // M3D_HPP
+#endif  // M3D_HPP
