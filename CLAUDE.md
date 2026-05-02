@@ -35,11 +35,15 @@ All public API lives in a single header: `src/include/m3d.hpp`. Implementations 
 
 - Phase 1: `vec2`, `vec3`, `vec4` — COMPLETE
 - Phase 2: `mat3`, `mat4` (core ops, `determinant`, `inverse`, `transpose`, `trace`) — COMPLETE
-- Phase 3: transform helpers (`translate`, `rotate`, `scale`, `perspective`, `ortho`, `lookAt`) — next
+- Phase 3: transform helpers (`translate`, `rotate`, `scale`, `perspective`, `ortho`, `lookAt`) — COMPLETE
+
+## Tracking rule
+
+When a phase or task is completed, update its entry in this file to mark it COMPLETE and update the Current status section accordingly. Do this before ending the session.
 
 ## Current status
 
-Phases 1 and 2 are complete. All types are implemented and tested in `src/sources/main.cpp`.
+All three phases are complete. All types and transforms are implemented and tested in `src/sources/main.cpp`.
 
 Key implementation decisions:
 - Truncating cast constructors (`vec2(const vec3&)`, `vec2(const vec4&)`, `vec3(const vec4&)`, `mat3(const mat4&)`) are marked `explicit`.
@@ -50,6 +54,10 @@ Key implementation decisions:
 - `mat3(float32 d)` / `mat4(float32 d)` construct a diagonal matrix (identity when d=1).
 - `mat4::inverse()` uses the Laplace 2x2 sub-determinant method (a0..a5, b0..b5 pairs).
 - Matrix `mul()` / `operator*` is true matrix multiplication; element-wise ops use `add/sub/div` only.
+- Transform helpers are instance methods that return `*this * T` (enabling chaining). Factory free functions (no matrix param) and instance-equivalent free functions (matrix as first param) are also provided.
+- `mat3` transforms use 2D homogeneous convention (3×3 with w=1 row/col). `mat4` transforms use standard OpenGL RH convention.
+- `perspective` and `ortho` map z to `[-1, 1]` NDC. `zNear`/`zFar` parameter names avoid the Windows `near`/`far` macro conflict.
+- `lookAt` constructs the view matrix from forward/right/up basis vectors.
 
 ## Code conventions  
 

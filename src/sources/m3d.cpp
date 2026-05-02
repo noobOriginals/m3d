@@ -406,6 +406,36 @@ mat3 transpose(const mat3& m)      { return m.transpose(); }
 mat3 inverse(const mat3& m)        { return m.inverse(); }
 float32 trace(const mat3& m)       { return m.trace(); }
 
+mat3 mat3::translate(const vec2& t) const {
+    mat3 T;
+    T.e[0]=1.0f; T.e[3]=0.0f; T.e[6]=t.x;
+    T.e[1]=0.0f; T.e[4]=1.0f; T.e[7]=t.y;
+    T.e[2]=0.0f; T.e[5]=0.0f; T.e[8]=1.0f;
+    return mul(T);
+}
+mat3 mat3::rotate(float32 a) const {
+    float32 c = std::cos(a), s = std::sin(a);
+    mat3 R;
+    R.e[0]=c;    R.e[3]=-s;   R.e[6]=0.0f;
+    R.e[1]=s;    R.e[4]=c;    R.e[7]=0.0f;
+    R.e[2]=0.0f; R.e[5]=0.0f; R.e[8]=1.0f;
+    return mul(R);
+}
+mat3 mat3::scale(const vec2& sv) const {
+    mat3 S;
+    S.e[0]=sv.x; S.e[3]=0.0f;  S.e[6]=0.0f;
+    S.e[1]=0.0f; S.e[4]=sv.y;  S.e[7]=0.0f;
+    S.e[2]=0.0f; S.e[5]=0.0f;  S.e[8]=1.0f;
+    return mul(S);
+}
+
+mat3 translate(const vec2& t) { return mat3(1.0f).translate(t); }
+mat3 translate(const mat3& m, const vec2& t) { return m.translate(t); }
+mat3 rotate(float32 angle) { return mat3(1.0f).rotate(angle); }
+mat3 rotate(const mat3& m, float32 angle) { return m.rotate(angle); }
+mat3 scale(const vec2& s) { return mat3(1.0f).scale(s); }
+mat3 scale(const mat3& m, const vec2& s) { return m.scale(s); }
+
 // --- mat4 ---
 
 mat4::mat4() : e{} {}
@@ -660,5 +690,83 @@ float32 determinant(const mat4& m) { return m.determinant(); }
 mat4 transpose(const mat4& m)      { return m.transpose(); }
 mat4 inverse(const mat4& m)        { return m.inverse(); }
 float32 trace(const mat4& m)       { return m.trace(); }
+
+mat4 mat4::translate(const vec3& t) const {
+    mat4 T(1.0f);
+    T.e[12]=t.x; T.e[13]=t.y; T.e[14]=t.z;
+    return mul(T);
+}
+mat4 mat4::rotate(float32 a, const vec3& axis) const {
+    vec3 n = axis.normalize();
+    float32 c = std::cos(a), s = std::sin(a), tc = 1.0f - c;
+    float32 x = n.x, y = n.y, z = n.z;
+    mat4 R;
+    R.e[ 0]=tc*x*x+c;   R.e[ 4]=tc*x*y-s*z; R.e[ 8]=tc*x*z+s*y; R.e[12]=0.0f;
+    R.e[ 1]=tc*x*y+s*z; R.e[ 5]=tc*y*y+c;   R.e[ 9]=tc*y*z-s*x; R.e[13]=0.0f;
+    R.e[ 2]=tc*x*z-s*y; R.e[ 6]=tc*y*z+s*x; R.e[10]=tc*z*z+c;   R.e[14]=0.0f;
+    R.e[ 3]=0.0f;        R.e[ 7]=0.0f;        R.e[11]=0.0f;        R.e[15]=1.0f;
+    return mul(R);
+}
+mat4 mat4::scale(const vec3& sv) const {
+    mat4 S;
+    S.e[ 0]=sv.x; S.e[ 4]=0.0f;  S.e[ 8]=0.0f;  S.e[12]=0.0f;
+    S.e[ 1]=0.0f; S.e[ 5]=sv.y;  S.e[ 9]=0.0f;  S.e[13]=0.0f;
+    S.e[ 2]=0.0f; S.e[ 6]=0.0f;  S.e[10]=sv.z;  S.e[14]=0.0f;
+    S.e[ 3]=0.0f; S.e[ 7]=0.0f;  S.e[11]=0.0f;  S.e[15]=1.0f;
+    return mul(S);
+}
+mat4 mat4::perspective(float32 fovy, float32 aspect, float32 zNear, float32 zFar) const {
+    float32 f = 1.0f / std::tan(fovy * 0.5f);
+    mat4 P;
+    P.e[ 0]=f/aspect; P.e[ 4]=0.0f; P.e[ 8]=0.0f;                             P.e[12]=0.0f;
+    P.e[ 1]=0.0f;     P.e[ 5]=f;    P.e[ 9]=0.0f;                             P.e[13]=0.0f;
+    P.e[ 2]=0.0f;     P.e[ 6]=0.0f; P.e[10]=(zNear+zFar)/(zNear-zFar);       P.e[14]=(2.0f*zNear*zFar)/(zNear-zFar);
+    P.e[ 3]=0.0f;     P.e[ 7]=0.0f; P.e[11]=-1.0f;                            P.e[15]=0.0f;
+    return mul(P);
+}
+mat4 mat4::ortho(float32 l, float32 r, float32 b, float32 t, float32 zNear, float32 zFar) const {
+    mat4 O;
+    O.e[ 0]=2.0f/(r-l);      O.e[ 4]=0.0f;         O.e[ 8]=0.0f;                  O.e[12]=-(r+l)/(r-l);
+    O.e[ 1]=0.0f;            O.e[ 5]=2.0f/(t-b);   O.e[ 9]=0.0f;                  O.e[13]=-(t+b)/(t-b);
+    O.e[ 2]=0.0f;            O.e[ 6]=0.0f;          O.e[10]=-2.0f/(zFar-zNear);   O.e[14]=-(zFar+zNear)/(zFar-zNear);
+    O.e[ 3]=0.0f;            O.e[ 7]=0.0f;          O.e[11]=0.0f;                  O.e[15]=1.0f;
+    return mul(O);
+}
+mat4 mat4::lookAt(const vec3& eye, const vec3& center, const vec3& up) const {
+    vec3 f = (center - eye).normalize();
+    vec3 r = f.cross(up).normalize();
+    vec3 u = r.cross(f);
+    mat4 V;
+    V.e[ 0]=r.x;       V.e[ 4]=r.y;       V.e[ 8]=r.z;       V.e[12]=-r.dot(eye);
+    V.e[ 1]=u.x;       V.e[ 5]=u.y;       V.e[ 9]=u.z;       V.e[13]=-u.dot(eye);
+    V.e[ 2]=-f.x;      V.e[ 6]=-f.y;      V.e[10]=-f.z;      V.e[14]=f.dot(eye);
+    V.e[ 3]=0.0f;      V.e[ 7]=0.0f;      V.e[11]=0.0f;      V.e[15]=1.0f;
+    return mul(V);
+}
+
+mat4 translate(const vec3& t)                          { return mat4(1.0f).translate(t); }
+mat4 translate(const mat4& m, const vec3& t)           { return m.translate(t); }
+mat4 rotate(float32 angle, const vec3& axis)           { return mat4(1.0f).rotate(angle, axis); }
+mat4 rotate(const mat4& m, float32 angle, const vec3& axis) { return m.rotate(angle, axis); }
+mat4 scale(const vec3& s)                              { return mat4(1.0f).scale(s); }
+mat4 scale(const mat4& m, const vec3& s)               { return m.scale(s); }
+mat4 perspective(float32 fovy, float32 aspect, float32 zNear, float32 zFar) {
+    return mat4(1.0f).perspective(fovy, aspect, zNear, zFar);
+}
+mat4 perspective(const mat4& m, float32 fovy, float32 aspect, float32 zNear, float32 zFar) {
+    return m.perspective(fovy, aspect, zNear, zFar);
+}
+mat4 ortho(float32 l, float32 r, float32 b, float32 t, float32 zNear, float32 zFar) {
+    return mat4(1.0f).ortho(l, r, b, t, zNear, zFar);
+}
+mat4 ortho(const mat4& m, float32 l, float32 r, float32 b, float32 t, float32 zNear, float32 zFar) {
+    return m.ortho(l, r, b, t, zNear, zFar);
+}
+mat4 lookAt(const vec3& eye, const vec3& center, const vec3& up) {
+    return mat4(1.0f).lookAt(eye, center, up);
+}
+mat4 lookAt(const mat4& m, const vec3& eye, const vec3& center, const vec3& up) {
+    return m.lookAt(eye, center, up);
+}
 
 } // namespace m3d

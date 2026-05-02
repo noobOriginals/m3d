@@ -258,6 +258,10 @@ struct mat3 {
     mat3 transpose() const;
     mat3 inverse() const;
     float32 trace() const;
+
+    mat3 translate(const vec2& t) const;
+    mat3 rotate(float32 angle) const;
+    mat3 scale(const vec2& s) const;
 };
 
 mat3 add(const mat3& a, const mat3& b);
@@ -293,6 +297,13 @@ mat3 transpose(const mat3& m);
 mat3 inverse(const mat3& m);
 float32 trace(const mat3& m);
 
+mat3 translate(const vec2& t);
+mat3 translate(const mat3& m, const vec2& t);
+mat3 rotate(float32 angle);
+mat3 rotate(const mat3& m, float32 angle);
+mat3 scale(const vec2& s);
+mat3 scale(const mat3& m, const vec2& s);
+
 // --- mat4 ---
 
 struct mat4 {
@@ -325,6 +336,13 @@ struct mat4 {
     mat4 transpose() const;
     mat4 inverse() const;
     float32 trace() const;
+
+    mat4 translate(const vec3& t) const;
+    mat4 rotate(float32 angle, const vec3& axis) const;
+    mat4 scale(const vec3& s) const;
+    mat4 perspective(float32 fovy, float32 aspect, float32 zNear, float32 zFar) const;
+    mat4 ortho(float32 left, float32 right, float32 bottom, float32 top, float32 zNear, float32 zFar) const;
+    mat4 lookAt(const vec3& eye, const vec3& center, const vec3& up) const;
 };
 
 mat4 add(const mat4& a, const mat4& b);
@@ -359,6 +377,19 @@ float32 determinant(const mat4& m);
 mat4 transpose(const mat4& m);
 mat4 inverse(const mat4& m);
 float32 trace(const mat4& m);
+
+mat4 translate(const vec3& t);
+mat4 translate(const mat4& m, const vec3& t);
+mat4 rotate(float32 angle, const vec3& axis);
+mat4 rotate(const mat4& m, float32 angle, const vec3& axis);
+mat4 scale(const vec3& s);
+mat4 scale(const mat4& m, const vec3& s);
+mat4 perspective(float32 fovy, float32 aspect, float32 zNear, float32 zFar);
+mat4 perspective(const mat4& m, float32 fovy, float32 aspect, float32 zNear, float32 zFar);
+mat4 ortho(float32 left, float32 right, float32 bottom, float32 top, float32 zNear, float32 zFar);
+mat4 ortho(const mat4& m, float32 left, float32 right, float32 bottom, float32 top, float32 zNear, float32 zFar);
+mat4 lookAt(const vec3& eye, const vec3& center, const vec3& up);
+mat4 lookAt(const mat4& m, const vec3& eye, const vec3& center, const vec3& up);
 
 } // namespace m3d
 

@@ -280,5 +280,118 @@ int main() {
         test("mat4 *=",                 eq(B.e[0], 1.0f) && eq(B.e[5], 1.0f));
     }
 
+    // tolerance for trig-based checks
+    auto eq5 = [](float32 a, float32 b) { return std::abs(a - b) < 1e-5f; };
+
+    // --- mat3 transforms ---
+    {
+        const float32 pi = 3.14159265358979323846f;
+
+        // translate: identity * T(2,3) — column 2 should be (2,3,1)
+        mat3 Tt = translate(vec2(2.0f, 3.0f));
+        test("mat3 translate e[6]",      eq(Tt.e[6], 2.0f));
+        test("mat3 translate e[7]",      eq(Tt.e[7], 3.0f));
+        test("mat3 translate e[8]",      eq(Tt.e[8], 1.0f));
+        test("mat3 translate diagonal",  eq(Tt.e[0], 1.0f) && eq(Tt.e[4], 1.0f));
+
+        // apply translate to a point (1,1,1) -> (3,4,1)
+        vec3 pt = Tt * vec3(1.0f, 1.0f, 1.0f);
+        test("mat3 translate * point",   eq(pt.x, 3.0f) && eq(pt.y, 4.0f) && eq(pt.z, 1.0f));
+
+        // rotate 90 deg: cos=0, sin=1 -> e[0]=0,e[1]=1,e[3]=-1,e[4]=0
+        mat3 Tr = rotate(pi * 0.5f);
+        test("mat3 rotate e[0]",         eq5(Tr.e[0], 0.0f));
+        test("mat3 rotate e[1]",         eq5(Tr.e[1], 1.0f));
+        test("mat3 rotate e[3]",         eq5(Tr.e[3], -1.0f));
+        test("mat3 rotate e[4]",         eq5(Tr.e[4], 0.0f));
+
+        // rotate(mat3,angle) free function equals instance method
+        test("mat3 free rotate equiv",   eq5(rotate(mat3(1.0f), pi * 0.5f).e[1], 1.0f));
+
+        // scale: identity * S(2,3)
+        mat3 Ts = scale(vec2(2.0f, 3.0f));
+        test("mat3 scale e[0]",          eq(Ts.e[0], 2.0f));
+        test("mat3 scale e[4]",          eq(Ts.e[4], 3.0f));
+        test("mat3 scale e[8]",          eq(Ts.e[8], 1.0f));
+
+        // chain: T*S applied right-to-left, so scale first then translate
+        // T*S*(1,1,1): S*(1,1,1)=(2,2,1), T*(2,2,1)=(3,4,1)
+        mat3 Tts = mat3(1.0f).translate(vec2(1.0f, 2.0f)).scale(vec2(2.0f, 2.0f));
+        vec3 p2 = Tts * vec3(1.0f, 1.0f, 1.0f);
+        test("mat3 chain translate+scale", eq(p2.x, 3.0f) && eq(p2.y, 4.0f));
+    }
+
+    // --- mat4 transforms ---
+    {
+        const float32 pi = 3.14159265358979323846f;
+
+        // translate
+        mat4 Tt = translate(vec3(1.0f, 2.0f, 3.0f));
+        test("mat4 translate e[12]",     eq(Tt.e[12], 1.0f));
+        test("mat4 translate e[13]",     eq(Tt.e[13], 2.0f));
+        test("mat4 translate e[14]",     eq(Tt.e[14], 3.0f));
+        test("mat4 translate e[15]",     eq(Tt.e[15], 1.0f));
+        test("mat4 translate diagonal",  eq(Tt.e[0], 1.0f) && eq(Tt.e[5], 1.0f) && eq(Tt.e[10], 1.0f));
+
+        // apply to a point (0,0,0,1) -> (1,2,3,1)
+        vec4 pt = Tt * vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        test("mat4 translate * point",   eq(pt.x, 1.0f) && eq(pt.y, 2.0f) && eq(pt.z, 3.0f));
+
+        // rotate 90 deg around Z: (1,0,0,0) -> (0,1,0,0)
+        auto eq5 = [](float32 a, float32 b) { return std::abs(a - b) < 1e-5f; };
+        mat4 Tr = rotate(pi * 0.5f, vec3(0.0f, 0.0f, 1.0f));
+        vec4 rx = Tr * vec4(1.0f, 0.0f, 0.0f, 0.0f);
+        test("mat4 rotate Z 90 x->y.x",  eq5(rx.x, 0.0f));
+        test("mat4 rotate Z 90 x->y.y",  eq5(rx.y, 1.0f));
+
+        // rotate 90 deg around X: (0,1,0,0) -> (0,0,1,0)
+        mat4 TrX = rotate(pi * 0.5f, vec3(1.0f, 0.0f, 0.0f));
+        vec4 ry = TrX * vec4(0.0f, 1.0f, 0.0f, 0.0f);
+        test("mat4 rotate X 90 y->z.y",  eq5(ry.y, 0.0f));
+        test("mat4 rotate X 90 y->z.z",  eq5(ry.z, 1.0f));
+
+        // scale
+        mat4 Ts = scale(vec3(2.0f, 3.0f, 4.0f));
+        test("mat4 scale e[0]",          eq(Ts.e[0], 2.0f));
+        test("mat4 scale e[5]",          eq(Ts.e[5], 3.0f));
+        test("mat4 scale e[10]",         eq(Ts.e[10], 4.0f));
+        test("mat4 scale e[15]",         eq(Ts.e[15], 1.0f));
+
+        // perspective: check known entries
+        // fovy=pi/2, aspect=1, zNear=1, zFar=100
+        // f=1/tan(pi/4)=1, e[0]=1, e[5]=1, e[11]=-1, e[15]=0
+        mat4 Tp = perspective(pi * 0.5f, 1.0f, 1.0f, 100.0f);
+        test("mat4 perspective e[0]",    eq5(Tp.e[0], 1.0f));
+        test("mat4 perspective e[5]",    eq5(Tp.e[5], 1.0f));
+        test("mat4 perspective e[11]",   eq(Tp.e[11], -1.0f));
+        test("mat4 perspective e[15]",   eq(Tp.e[15], 0.0f));
+
+        // ortho: left=-1,right=1,bottom=-1,top=1,near=0,far=1
+        // e[0]=1, e[5]=1, e[10]=-2, e[12]=0, e[13]=0, e[14]=-1, e[15]=1
+        mat4 To = ortho(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 1.0f);
+        test("mat4 ortho e[0]",          eq(To.e[0], 1.0f));
+        test("mat4 ortho e[5]",          eq(To.e[5], 1.0f));
+        test("mat4 ortho e[10]",         eq(To.e[10], -2.0f));
+        test("mat4 ortho e[12]",         eq(To.e[12], 0.0f));
+        test("mat4 ortho e[14]",         eq(To.e[14], -1.0f));
+        test("mat4 ortho e[15]",         eq(To.e[15], 1.0f));
+
+        // lookAt: eye=(0,0,5), center=(0,0,0), up=(0,1,0)
+        // forward=(0,0,-1), right=(1,0,0), up=(0,1,0)
+        // e[0]=1,e[5]=1,e[10]=1,e[14]=5 (dot(f,eye)=dot(0,0,-1,0,0,5)=-5 => wait)
+        // dot(f,eye) = (0,0,-1).(0,0,5) = -5, so e[14]=-5
+        // -dot(r,eye)=0, -dot(u,eye)=0
+        mat4 Tv = lookAt(vec3(0.0f, 0.0f, 5.0f), vec3(0.0f), vec3(0.0f, 1.0f, 0.0f));
+        test("mat4 lookAt e[0]",         eq5(Tv.e[0], 1.0f));
+        test("mat4 lookAt e[5]",         eq5(Tv.e[5], 1.0f));
+        test("mat4 lookAt e[10]",        eq5(Tv.e[10], 1.0f));  // -(-1)=1 -> wait, e[10]=-f.z=-(-1)=1
+        test("mat4 lookAt e[14]",        eq5(Tv.e[14], -5.0f)); // dot(f,eye)=(0,0,-1).(0,0,5)=-5
+        test("mat4 lookAt e[15]",        eq(Tv.e[15], 1.0f));
+
+        // free function equiv
+        test("mat4 free translate",      eq(translate(mat4(1.0f), vec3(1.0f,0.0f,0.0f)).e[12], 1.0f));
+        test("mat4 free scale",          eq(scale(mat4(1.0f), vec3(2.0f,2.0f,2.0f)).e[0], 2.0f));
+    }
+
     return 0;
 }
