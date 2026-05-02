@@ -22,7 +22,7 @@ int main() {
         test("vec2 default ctor",    eq(vec2().x, 0.0f) && eq(vec2().y, 0.0f));
         test("vec2 scalar ctor",     eq(vec2(5.0f).x, 5.0f) && eq(vec2(5.0f).y, 5.0f));
 
-        vec2 r = a.neg();
+        vec2 r = -a;
         test("vec2 neg", eq(r.x, -1.0f) && eq(r.y, -2.0f));
 
         r = a.inv();
@@ -102,7 +102,7 @@ int main() {
         test("vec3 from vec2 z",     eq(vec3(vec2(1.0f, 2.0f), 9.0f).z, 9.0f));
         test("vec3 from vec4",       eq(vec3(vec4(1.0f, 2.0f, 3.0f, 4.0f)).z, 3.0f));
 
-        vec3 r = a.neg();
+        vec3 r = -a;
         test("vec3 neg", eq(r.x, -1.0f) && eq(r.y, -2.0f) && eq(r.z, -3.0f));
 
         r = a.inv();
@@ -146,7 +146,7 @@ int main() {
         test("vec4 from vec3 w",     eq(vec4(vec3(1.0f, 2.0f, 3.0f), 1.0f).w, 1.0f));
         test("vec4 from vec2",       eq(vec4(vec2(1.0f, 2.0f), 3.0f, 4.0f).z, 3.0f));
 
-        vec4 r = a.neg();
+        vec4 r = -a;
         test("vec4 neg", eq(r.x, -1.0f) && eq(r.y, -2.0f) && eq(r.z, -3.0f) && eq(r.w, -4.0f));
 
         r = a.inv();

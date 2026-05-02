@@ -151,6 +151,10 @@ vec2 div(float32 s, const vec2& v) {
     return vec2(s / v.x, s / v.y);
 }
 
+vec2 operator-(const vec2& v) {
+    return v.neg();
+}
+
 vec2 operator+(const vec2& a, const vec2& b) {
     return a.add(b);
 }
@@ -361,6 +365,10 @@ vec3 div(float32 s, const vec3& v) {
     return vec3(s / v.x, s / v.y, s / v.z);
 }
 
+vec3 operator-(const vec3& v) {
+    return v.neg();
+}
+
 vec3 operator+(const vec3& a, const vec3& b) {
     return a.add(b);
 }
@@ -569,6 +577,10 @@ vec4 div(const vec4& v, float32 s) {
 }
 vec4 div(float32 s, const vec4& v) {
     return vec4(s / v.x, s / v.y, s / v.z, s / v.w);
+}
+
+vec4 operator-(const vec4& v) {
+    return v.neg();
 }
 
 vec4 operator+(const vec4& a, const vec4& b) {

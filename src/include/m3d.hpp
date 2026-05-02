@@ -84,6 +84,8 @@ vec2 div(const vec2& a, const vec2& b);
 vec2 div(const vec2& v, float32 s);
 vec2 div(float32 s, const vec2& v);
 
+vec2 operator-(const vec2& v);
+
 vec2 operator+(const vec2& a, const vec2& b);
 vec2 operator+(const vec2& v, float32 s);
 vec2 operator+(float32 s, const vec2& v);
@@ -159,6 +161,8 @@ vec3 div(const vec3& a, const vec3& b);
 vec3 div(const vec3& v, float32 s);
 vec3 div(float32 s, const vec3& v);
 
+vec3 operator-(const vec3& v);
+
 vec3 operator+(const vec3& a, const vec3& b);
 vec3 operator+(const vec3& v, float32 s);
 vec3 operator+(float32 s, const vec3& v);
@@ -230,6 +234,8 @@ vec4 mul(float32 s, const vec4& v);
 vec4 div(const vec4& a, const vec4& b);
 vec4 div(const vec4& v, float32 s);
 vec4 div(float32 s, const vec4& v);
+
+vec4 operator-(const vec4& v);
 
 vec4 operator+(const vec4& a, const vec4& b);
 vec4 operator+(const vec4& v, float32 s);
